@@ -45,6 +45,11 @@ pipeline {
                         exit 1
                     fi
 
+                    export HOME="$WORKSPACE"
+                    export npm_config_cache="$WORKSPACE/.npm"
+
+                    mkdir -p "$npm_config_cache"
+
                     npm install --no-save @marp-team/marp-cli
 
                     mkdir -p pdf
