@@ -1,28 +1,21 @@
 pipeline {
-    agent {
-        dockerfile {
-            filename 'Dockerfile'
-            dir '.' //Ruta del Dockerfile
-            reuseNode true
-        }
-    }
+    agent any
 
     options {
-        skipDefaultCheckout(true) // Evita el checkout automático al inicio del pipeline
-        timestamps() // Muestra marcas de tiempo en la salida de la consola
-        disableConcurrentBuilds() // Evita que se ejecuten múltiples builds concurrentes
-        buildDiscarder(logRotator(numToKeepStr: '10')) // Mantiene solo los últimos 10 builds
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
     triggers {
-        pollSCM('H/5 * * * *') // Verifica cambios en el repositorio cada 5 minutos
+        pollSCM('H/5 * * * *')
     }
 
     parameters {
         string(
             name: 'MD_FILE',
             defaultValue: 'slides/presentacion.md',
-            description: 'Ruta del archivo Markdown a procesar'
+            description: 'Ruta del archivo markdown a procesar'
         )
     }
 
@@ -30,26 +23,29 @@ pipeline {
         stage('Checkout desde SCM') {
             steps {
                 checkout scm
+                sh 'ls -la'
             }
         }
 
-        stage('Instalación de dependencias') {
+        stage('Instalación de dependencias y generación del PDF') {
+            agent {
+                dockerfile {
+                    filename 'Dockerfile'
+                    dir '.'
+                    reuseNode true
+                }
+            }
             steps {
                 sh '''
                     node --version
                     npm --version
-                    npm install --no-save @marp-team/marp-cli
-                '''
-            }
-        }
 
-        stage('Generación del PDF') {
-            steps {
-                sh '''
                     if [ ! -f "${MD_FILE}" ]; then
                         echo "ERROR: no existe el archivo ${MD_FILE}"
                         exit 1
                     fi
+
+                    npm install --no-save @marp-team/marp-cli
 
                     mkdir -p pdf
                     nombre_pdf=$(basename "${MD_FILE}" .md)
