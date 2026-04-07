@@ -2,20 +2,20 @@ pipeline {
     agent {
         dockerfile {
             filename 'Dockerfile'
-            dir '.'
+            dir '.' //Ruta del Dockerfile
             reuseNode true
         }
     }
 
     options {
-        skipDefaultCheckout(true)
-        timestamps()
-        disableConcurrentBuilds()
-        buildDiscarder(logRotator(numToKeepStr: '10'))
+        skipDefaultCheckout(true) // Evita el checkout automático al inicio del pipeline
+        timestamps() // Muestra marcas de tiempo en la salida de la consola
+        disableConcurrentBuilds() // Evita que se ejecuten múltiples builds concurrentes
+        buildDiscarder(logRotator(numToKeepStr: '10')) // Mantiene solo los últimos 10 builds
     }
 
     triggers {
-        pollSCM('H/5 * * * *')
+        pollSCM('H/5 * * * *') // Verifica cambios en el repositorio cada 5 minutos
     }
 
     parameters {
