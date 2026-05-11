@@ -6,7 +6,7 @@ services:
     container_name: jenkins-marp
     user: root
     ports:
-      - "8081:8085"
+      - "8084:8085"
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
