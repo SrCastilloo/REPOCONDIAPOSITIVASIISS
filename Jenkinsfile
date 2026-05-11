@@ -62,6 +62,20 @@ pipeline {
             }
         }
 
+        stage('Análisis con SonarQube') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarScanner'
+
+                    withSonarQubeEnv('SonarQube') { 
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner 
+                        """
+                    }
+                }
+            }
+        }
+
         stage('Archivado del artefacto') {
             steps {
                 archiveArtifacts artifacts: 'pdf/*.pdf', fingerprint: true, onlyIfSuccessful: true
@@ -71,7 +85,7 @@ pipeline {
 
     post {
         success {
-            echo 'PDF generado y archivado correctamente.'
+            echo 'PDF generado, analizado con SonarQube y archivado correctamente.'
         }
         failure {
             echo 'La ejecución ha fallado.'
@@ -81,3 +95,5 @@ pipeline {
         }
     }
 }
+// para ejecutar el jenkinsfile ejecutamos: 
+// jenkins-jobs --conf jenkins_jobs.ini test jenkinsfile
