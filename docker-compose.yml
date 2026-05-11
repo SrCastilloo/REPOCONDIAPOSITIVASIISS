@@ -6,7 +6,7 @@ services:
     container_name: jenkins-marp
     user: root
     ports:
-      - "8084:8085"
+      - "8084:8080"
       - "50001:50001"
     volumes:
       - jenkins_home:/var/jenkins_home
@@ -20,7 +20,7 @@ services:
     image: sonarqube:lts-community
     container_name: sonarqube-marp
     ports:
-      - "9001:9001"
+      - "9001:9000"
     environment:
       SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
       SONAR_JDBC_USERNAME: sonar
