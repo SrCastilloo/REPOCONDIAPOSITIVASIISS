@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.jenkins
-    container_name: jenkins
+    container_name: jenkins-marp
     user: root
     ports:
       - "8081:8085"
@@ -18,7 +18,7 @@ services:
 
   sonarqube:
     image: sonarqube:lts-community
-    container_name: sonarqube
+    container_name: sonarqube-marp
     ports:
       - "9000:9000"
     environment:
@@ -37,7 +37,7 @@ services:
 
   postgres:
     image: postgres:15
-    container_name: sonar-postgres
+    container_name: sonar-postgres-marp
     environment:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar
